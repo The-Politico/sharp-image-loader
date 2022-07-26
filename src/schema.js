@@ -40,7 +40,7 @@ export default {
     tiny: {
       description: 'Generate tiny version to be blurred as a fallback, either as asset or data URI.',
       type: 'string',
-      pattern: 'data|url',
+      pattern: 'data|asset',
     },
   },
   additionalProperties: false,

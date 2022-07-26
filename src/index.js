@@ -41,7 +41,7 @@ export default function sharpImageLoader() {
 
   loadImage(resourcePath, { name, sizes, squares, tiny })
     .then((files) => {
-      return emitFilesAndBuildSource(this, files, { name });
+      return emitFilesAndBuildSource(this, files, { name, tiny });
     })
     .then((source) => {
       const mod = `${esModule ? 'export default' : 'module.exports ='} ${source}`;

@@ -1,3 +1,4 @@
+import mime from 'mime-types';
 import emitImage from './emitImage';
 import buildImageSource from './buildImageSource';
 
@@ -7,7 +8,12 @@ export default async function emitFilesAndBuildSource(loader, files, opts) {
     original,
     sizes,
     squares,
+    tiny,
   } = files;
+
+  const {
+    tiny: tinyFormat,
+  } = opts;
 
   const originalImage = await emitImage(loader, original, opts);
   const originalSource = buildImageSource(originalImage);
@@ -26,6 +32,14 @@ export default async function emitFilesAndBuildSource(loader, files, opts) {
     `sizes: [${sizesSource.join(', ')}]`,
     `squares: [${squaresSource.join(', ')}]`,
   ];
+
+  if (tinyFormat) {
+    const mimeType = mime.lookup(metadata.format);
+    const tinyUrl = (tinyFormat === 'asset')
+      ? (await emitImage(loader, tiny, opts)).url
+      : `data:${mimeType};base64,${tiny.content.toString('base64')}`
+    sourceItems.push(`tiny: ${JSON.stringify(tinyUrl)}`);
+  }
 
   return `{${sourceItems.join(', ')}}`;
 }

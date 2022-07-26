@@ -25,11 +25,13 @@ export default async function loadImage(path, opts = {}) {
   const imageSquares = await Promise.all(
     squares.map((size) => resizeImage(path, { size })),
   );
+  const imageTiny = await resizeImage(path, { size: [40] });
 
   return {
     metadata: imageMetadata,
     original,
     sizes: imageSizes,
     squares: imageSquares,
+    tiny: imageTiny,
   };
 }

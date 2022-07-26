@@ -3,11 +3,12 @@ import rgbToHex from './rgbToHex';
 
 export default async function loadImageMetadata(path) {
   const image = sharp(path);
-  const { width, height } = await image.metadata();
+  const { format, width, height } = await image.metadata();
   const { dominant } = await image.stats();
   return {
     width,
     height,
+    format,
     color: rgbToHex(dominant),
   };
 }

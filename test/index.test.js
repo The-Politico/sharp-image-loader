@@ -36,7 +36,6 @@ test('Respects name option', async () => {
   });
   const webpackStats = stats.toJson({ source: true });
   const mainModule = webpackStats.modules[0];
-  console.log(mainModule);
 
   const assetName = mainModule.assets[0];
 
@@ -51,7 +50,6 @@ test('Respects name option with multiple sizes', async () => {
   });
   const webpackStats = stats.toJson({ source: true });
   const mainModule = webpackStats.modules[0];
-  console.log(mainModule);
 
   const assetNames = mainModule.assets;
 
@@ -59,4 +57,30 @@ test('Respects name option with multiple sizes', async () => {
   expect(assetNames).toContain('images/sharp/200w100h.png');
   expect(assetNames).toContain('images/sharp/100w50h.png');
   expect(assetNames).toContain('images/sharp/64w64h.png');
+});
+
+test('Generates a tiny asset', async () => {
+  const stats = await compiler('./images/sharp.js', {
+    name: 'images/[name]/[image].[ext]',
+    tiny: 'asset',
+  });
+  const webpackStats = stats.toJson({ source: true });
+  const mainModule = webpackStats.modules[0];
+
+  const assetNames = mainModule.assets;
+
+  expect(assetNames).toContain('images/sharp/40w20h.png');
+});
+
+test('Generates a tiny data URI', async () => {
+  const stats = await compiler('./images/sharp.js', {
+    name: 'images/[name]/[image].[ext]',
+    tiny: 'data',
+  });
+  const webpackStats = stats.toJson({ source: true });
+  const mainModule = webpackStats.modules[0];
+
+  const assetNames = mainModule.assets;
+
+  expect(assetNames.length).toBe(1);
 });
