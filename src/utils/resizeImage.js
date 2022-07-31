@@ -11,9 +11,8 @@ export default async function resizeImage(path, opts = {}) {
     width: w,
     height: h,
     fit: sharp.fit.cover,
-    position: sharp.strategy.attention,
   });
-  const content = await resized.toBuffer();
+  const content = await resized.rotate().toBuffer();
   const { width, height } = await sharp(content).metadata();
 
   return {
