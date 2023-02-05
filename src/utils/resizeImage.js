@@ -3,6 +3,7 @@ import sharp from 'sharp';
 export default async function resizeImage(path, opts = {}) {
   const {
     size,
+    position,
   } = opts;
 
   const [w, h] = size;
@@ -11,6 +12,7 @@ export default async function resizeImage(path, opts = {}) {
     width: w,
     height: h,
     fit: sharp.fit.cover,
+    position,
   });
   const content = await resized.rotate().toBuffer();
   const { width, height } = await sharp(content).metadata();

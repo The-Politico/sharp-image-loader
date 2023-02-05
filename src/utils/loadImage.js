@@ -4,10 +4,9 @@ import resizeImage from './resizeImage';
 
 export default async function loadImage(path, opts = {}) {
   const {
-    name,
     sizes,
     squares,
-    tiny,
+    resizeOptions = {},
   } = opts;
 
   const imageMetadata = await loadImageMetadata(path);
@@ -20,12 +19,12 @@ export default async function loadImage(path, opts = {}) {
     content: imageBuffer,
   };
   const imageSizes = await Promise.all(
-    sizes.map((size) => resizeImage(path, { size })),
+    sizes.map((size) => resizeImage(path, { size, ...resizeOptions })),
   );
   const imageSquares = await Promise.all(
-    squares.map((size) => resizeImage(path, { size })),
+    squares.map((size) => resizeImage(path, { size, ...resizeOptions })),
   );
-  const imageTiny = await resizeImage(path, { size: [40] });
+  const imageTiny = await resizeImage(path, { size: [40], ...resizeOptions });
 
   return {
     metadata: imageMetadata,

@@ -34,12 +34,16 @@ export default function sharpImageLoader() {
   const squares = normalizeSquares(rawSquares);
 
   const resourcePath = this.resourcePath;
+  const params = new URLSearchParams(this.resourceQuery);
+  const resizeOptions = {
+    position: params.get('position') || 'centre',
+  };
 
   const esModule = (typeof options.esModule !== 'undefined')
     ? options.esModule
     : true
 
-  loadImage(resourcePath, { name, sizes, squares, tiny })
+  loadImage(resourcePath, { sizes, squares, resizeOptions })
     .then((files) => {
       return emitFilesAndBuildSource(this, files, { name, tiny });
     })
