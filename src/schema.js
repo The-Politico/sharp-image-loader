@@ -12,6 +12,18 @@ export default {
         }
       ]
     },
+    resizeOriginal: {
+      description: 'The size (either `[width,height]` or just `width`) to resize the original image to.',
+      anyOf: [
+        { type: 'integer' },
+        {
+          type: 'array',
+          items: { type: 'integer' },
+          maxItems: 2,
+          minItems: 1,
+        },
+      ],
+    },
     sizes: {
       description: 'The sizes (either `[width,height]` or just `width`) to resize image.',
       type: 'array',
@@ -22,7 +34,7 @@ export default {
             type: 'array',
             items: { type: 'integer' },
             maxItems: 2,
-            minItems: 2,
+            minItems: 1,
           },
         ],
       },
@@ -39,8 +51,25 @@ export default {
     },
     tiny: {
       description: 'Generate tiny version to be blurred as a fallback, either as asset or data URI.',
-      type: 'string',
-      pattern: 'data|asset',
+      anyOf: [
+        { type: 'boolean' },
+        {
+          type: 'string',
+          pattern: 'data|asset',
+        },
+      ],
+    },
+    formats: {
+      description: 'Additional image formats to convert original images to',
+      anyOf: [
+        { type: 'boolean' },
+        {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+        },
+      ],
     },
   },
   additionalProperties: false,

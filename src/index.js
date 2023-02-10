@@ -1,13 +1,15 @@
 import { validate } from 'schema-utils';
 import schema from './schema';
-import normalizeSquares from './utils/normalizeSquares';
+import normalizeOptions from './utils/normalizeOptions';
 import loadImage from './utils/loadImage';
 import emitFilesAndBuildSource from './utils/emitFilesAndBuildSource';
 
 const defaultOptions = {
   name: '[contenthash].[ext]',
+  resizeOriginal: undefined,
   sizes: [],
   squares: false,
+  formats: ['avif', 'webp'],
 };
 
 export default function sharpImageLoader() {
@@ -25,13 +27,12 @@ export default function sharpImageLoader() {
 
   const {
     name,
-    sizes: rawSizes,
-    squares: rawSquares,
+    resizeOriginal,
+    sizes,
+    squares,
     tiny,
-  } = options;
-
-  const sizes = rawSizes.map((size) => Array.isArray(size) ? size : [size]);
-  const squares = normalizeSquares(rawSquares);
+    formats,
+  } = normalizeOptions(options);
 
   const resourcePath = this.resourcePath;
   const params = new URLSearchParams(this.resourceQuery);
@@ -43,7 +44,13 @@ export default function sharpImageLoader() {
     ? options.esModule
     : true
 
-  loadImage(resourcePath, { sizes, squares, resizeOptions })
+  loadImage(resourcePath, {
+    resizeOriginal,
+    sizes,
+    squares,
+    formats,
+    resizeOptions,
+  })
     .then((files) => {
       return emitFilesAndBuildSource(this, files, { name, tiny });
     })

@@ -1,5 +1,6 @@
 import path from 'path';
 import { interpolateName } from 'loader-utils';
+import mime from 'mime-types';
 import normalizePath from './normalizePath';
 
 export default function emitImage(loader, image, opts = {}) {
@@ -7,6 +8,7 @@ export default function emitImage(loader, image, opts = {}) {
     width,
     height,
     content,
+    formats = [],
   } = image;
 
   const {
@@ -24,8 +26,6 @@ export default function emitImage(loader, image, opts = {}) {
     context,
     content,
   });
-
-  const publicPath = `__webpack_public_path__ + ${JSON.stringify(url)}`;
 
   const assetInfo = {};
 
@@ -51,11 +51,23 @@ export default function emitImage(loader, image, opts = {}) {
     path.relative(loader.rootContext, loader.resourcePath)
   );
 
+  const getPublicPath = (u) => `__webpack_public_path__ + ${JSON.stringify(u)}`;
+
   loader.emitFile(url, content, null, assetInfo);
+  const fmts = formats.map((format) => {
+    const ext = mime.extension(format.format);
+    const formatUrl = `${url}.${ext}`;
+    loader.emitFile(formatUrl, format.content, null, assetInfo);
+    return {
+      format: format.format,
+      url: getPublicPath(formatUrl),
+    };
+  });
 
   return {
     width,
     height,
-    url: publicPath
+    url: getPublicPath(url),
+    formats: fmts,
   };
 }

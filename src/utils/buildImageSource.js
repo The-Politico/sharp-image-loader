@@ -1,3 +1,9 @@
-export default function buildImageSource({ url, width, height }) {
-  return `{ width: ${JSON.stringify(width)}, height: ${JSON.stringify(height)}, url: ${url} }`;
+export default function buildImageSource({ url, width, height, formats }) {
+  const w = JSON.stringify(width);
+  const h = JSON.stringify(height);
+  const f = formats.map(({ format, url }) => (
+    `{ format: ${JSON.stringify(format)}, url: ${url} }`
+  ));
+  const fs = `[${f.join(', ')}]`;
+  return `{ width: ${w}, height: ${h}, url: ${url}, formats: ${fs} }`;
 }
