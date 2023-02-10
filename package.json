@@ -14,7 +14,7 @@
     "url": "git+https://github.com/andrewmilligan/sharp-image-loader.git"
   },
   "author": "Andrew Milligan",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/andrewmilligan/sharp-image-loader/issues"
   },
