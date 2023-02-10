@@ -1,30 +1,47 @@
-import sharp from 'sharp';
 import loadImageMetadata from './loadImageMetadata';
 import resizeImage from './resizeImage';
 
 export default async function loadImage(path, opts = {}) {
   const {
+    resizeOriginal,
     sizes,
     squares,
+    formats,
     resizeOptions = {},
   } = opts;
 
   const imageMetadata = await loadImageMetadata(path);
 
-  const imageBuffer = await sharp(path).toBuffer();
+  const originalSize = resizeOriginal || [
+    imageMetadata.width,
+    imageMetadata.height,
+  ];
+  const [originalImage] = await resizeImage(path, {
+    sizes: [originalSize],
+    formats: [],
+    ...resizeOptions,
+  });
 
   const original = {
-    width: imageMetadata.width,
-    height: imageMetadata.height,
-    content: imageBuffer,
+    width: originalImage.width,
+    height: originalImage.height,
+    content: originalImage.content,
   };
-  const imageSizes = await Promise.all(
-    sizes.map((size) => resizeImage(path, { size, ...resizeOptions })),
-  );
-  const imageSquares = await Promise.all(
-    squares.map((size) => resizeImage(path, { size, ...resizeOptions })),
-  );
-  const imageTiny = await resizeImage(path, { size: [40], ...resizeOptions });
+  const imageSizes = await resizeImage(path, {
+    sizes,
+    formats,
+    ...resizeOptions,
+  });
+  const imageSquares = await resizeImage(path, {
+    sizes: squares,
+    formats,
+    ...resizeOptions,
+  });
+  const [imageTiny] = await resizeImage(path, {
+    sizes: [[40]],
+    formats: [],
+    ...resizeOptions,
+  });
 
   return {
     metadata: imageMetadata,

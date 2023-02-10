@@ -28,6 +28,7 @@ export default async function emitFilesAndBuildSource(loader, files, opts) {
 
   const sourceItems = [
     `metadata: ${JSON.stringify(metadata)}`,
+    `src: ${originalImage.url}`,
     `original: ${originalSource}`,
     `sizes: [${sizesSource.join(', ')}]`,
     `squares: [${squaresSource.join(', ')}]`,
